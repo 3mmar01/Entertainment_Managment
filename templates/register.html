@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block nav %}
+    <div class="d-flex gap-3">
+        <a class="nav-link text-white" href="login">log In</a>
+        <a class="nav-link text-white" href="register">Register</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form action="/register" method="post">
+            <div class="mb-3" style="margin-top: 20px;">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password">
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="steam_id" placeholder="Steam ID" type="text">
+            </div>
+            <button class="btn btn-primary" type="submit" style="margin-top: 20px; align-items: center;">Register</button>
+        </form>
+{% endblock %}

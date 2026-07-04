@@ -1,0 +1,24 @@
+{%- extends 'layout.html' -%}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block nav %}
+    <div class="d-flex gap-3">
+        <a class="nav-link text-white" href="/account">My Account</a>
+        <a class="nav-link text-white" href="/games">My Games</a>
+        <a class="nav-link text-white" href="/movies">My Series & Movies</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="contain">
+        <div class="header">
+            <h1>My Movies & Series</h1>
+        </div>
+        <div class="content">
+            <p>Manage your movies and series collection here.</p>
+        </div>
+    </div>
+{% endblock %}

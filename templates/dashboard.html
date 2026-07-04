@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block nav %}
+    <div class="d-flex gap-3">
+        <!-- <a class="nav-link text-white" href="/account">My Account</a> -->
+        <a class="nav-link text-white" href="/games">My Games</a>
+        <!-- <a class="nav-link text-white" href="/movies">My Series & Movies</a> -->
+        <a class="nav-link text-white" href="/logout">Logout</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="contain">
+        <div class="header">
+            <h1>Active Dashboard</h1>
+        </div>
+        <div class="content">
+            <p>Welcome <b>{{username}}</b> to your active dashboard !!!</p>
+        </div>
+    </div>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Game Name</th>
+                    <th scope="col">Achievements Unlocked</th>
+                    <th scope="col">Total Achievements</th>
+                    <th scope="col">Playtime (Hrs)</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in games %}
+                    {% if game.status == 'playing' %}
+                    <tr>
+                        <td>{{ game.game_name }}</td>
+                        <td>{{ game.achievements_unlocked }}</td>
+                        <td>{{ game.achievements_total }}</td>
+                        <td>{{ game.playtime_forever }}</td>
+                        <td>{{ game.status }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

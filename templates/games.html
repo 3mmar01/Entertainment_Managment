@@ -1,0 +1,85 @@
+{%- extends 'layout.html' -%}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block nav %}
+    <div class="d-flex gap-3">
+        <!-- <a class="nav-link text-white" href="/account">My Account</a> -->
+        <a class="nav-link text-white" href="/games">My Games</a>
+        <!-- <a class="nav-link text-white" href="/movies">My Series & Movies</a> -->
+        <a class="nav-link text-white" href="/logout">Logout</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="contain">
+        <div class="header">
+            <h1>My Games</h1>
+        </div>
+        <div class="content">
+            <p>Manage your game collection here.</p>
+        </div>
+    </div>
+    <div class="container my-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 custom-header">
+        <h2 class="fw-bold text-white mb-0">🎮 My Steam Library</h2>
+        <span class="badge bg-secondary fs-6">Total: {{ games|length }} Games</span>
+        <button class="btn btn-primary mb-0" style="background-color:#e2d4e0 !important; color:rgb(82, 0, 82) !important;" onclick="location.href='/games/sync'">Sync Games</button>
+        <form action="/games" method="GET" class="d-flex gap-2 align-items-center">
+            <select class="form-select w-auto" name="status" onchange="this.form.submit()">
+                <option value="default" {% if current_status == 'all' %}selected disabled{% endif %}>Statuses</option>
+                <option value="all" {% if current_status == 'all' %}selected{% endif %}>All Statuses</option>
+                <option value="not_started" {% if current_status == 'not_started' %}selected{% endif %}>Not Started</option>
+                <option value="playing" {% if current_status == 'playing' %}selected{% endif %}>Playing</option>
+                <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="dropped" {% if current_status == 'dropped' %}selected{% endif %}>Dropped</option>
+            </select>
+        </form>
+    </div>
+
+    {% if not games %}
+        <div class="alert alert-warning text-center rounded-3 shadow-sm" role="alert">
+            <h5>No games found!</h5>
+            <p class="mb-0">Make sure your Steam privacy settings for <b>Game details</b> are set to <b>Public</b>.</p>
+        </div>
+    {% else %}
+        
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for game in games %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 text-white game-card">
+
+                <img src="{{ game.img_icon_url }}" class="card-img-top game-card-img" alt="{{ game.game_name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x300?text=No+Image';">
+
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="card-title fw-bold text-truncate mb-3">{{ game.game_name }}</h5>
+
+                    <div class="d-flex flex-wrap gap-2 align-items-center mt-auto">
+                        <span class="badge bg-info px-2 py-1">
+                            {{ game.achievements_unlocked }}/{{ game.achievements_total }}
+                        </span>
+                        <span class="badge bg-success px-2 py-1">
+                            {{ game.playtime_forever }} Hrs
+                        </span>
+                        <form action="{{ url_for('update_status', appid=game.game_appid) }}" method="POST" class="w-auto">
+                            <select name="status" class="form-select form-select-sm bg-warning text-dark fw-bold w-auto"
+                                    onchange="this.form.submit()">
+                                <option value="not_started" {% if game.status == 'not_started' %}selected{% endif %}>Not Started</option>
+                                <option value="playing" {% if game.status == 'playing' %}selected{% endif %}>Playing</option>
+                                <option value="completed" {% if game.status == 'completed' %}selected{% endif %}>Completed</option>
+                                <option value="dropped" {% if game.status == 'dropped' %}selected{% endif %}>Dropped</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    {% endfor %}
+</div>
+
+    {% endif %}
+</div>
+{% endblock %}

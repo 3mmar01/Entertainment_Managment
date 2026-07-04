@@ -1,0 +1,71 @@
+html{
+    font-family: Arial, sans-serif;
+}
+nav{
+    background-color: rgb(82, 0, 82)
+}
+
+body{
+    background-color: #e2d4e0;
+    h1{
+        background-color: rgb(82, 0, 82);
+        color: #e2d4e0;
+        border-radius: 10px;
+        border: 2px solid rgb(82, 0, 82);
+        text-align: center;
+        padding: 10px;
+        margin: 20px;
+    }
+    p{
+        color: rgb(82, 0, 82);
+        font-size: 18px;
+    }
+}
+
+form{
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.btn-primary {
+    background-color: rgb(82, 0, 82) !important; 
+    border-color: rgb(82, 0, 82) !important;     
+}
+
+.btn-primary:hover {
+    background-color: rgba(82, 0, 82, 0.678) !important; 
+    border-color: rgba(82, 0, 82, 0.678) !important;
+}
+
+.contain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.custom-header {
+    background-color: rgb(82, 0, 82);
+}
+
+
+.game-card {
+    background-color: rgb(82, 0, 82);
+    border-radius: 15px !important; 
+    overflow: hidden; 
+}
+
+.game-card-img {
+    border-top-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+}
+.badge{
+    background-color: #e2d4e0 !important;
+    color: rgb(82, 0, 82) !important;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
