@@ -99,6 +99,8 @@ def games():
     status_filter = request.args.get("status")
     if status_filter in ["not_started", "playing", "completed", "dropped"]:
         games_list = [g for g in games_list if g["status"] == status_filter]
+    else:
+        status_filter = "all"
     return render_template("games.html", games=games_list)
 
 
