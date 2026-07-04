@@ -96,18 +96,9 @@ def games():
         "FROM steam_games WHERE user_id = ? ORDER BY playtime_forever DESC",
         session["user_id"]
     )
-    if format(request.args.get("status")):
-        current_status = request.args.get("status")
-        if current_status == "not_started":
-            games_list = [game for game in games_list if game["status"] == "not_started"]
-        elif current_status == "playing":
-            games_list = [game for game in games_list if game["status"] == "playing"]
-        elif current_status == "completed":
-            games_list = [game for game in games_list if game["status"] == "completed"]
-        elif current_status == "dropped":
-            games_list = [game for game in games_list if game["status"] == "dropped"]
-        else:
-            games_list = games_list
+    status_filter = request.args.get("status")
+    if status_filter in ["not_started", "playing", "completed", "dropped"]:
+        games_list = [g for g in games_list if g["status"] == status_filter]
     return render_template("games.html", games=games_list)
 
 

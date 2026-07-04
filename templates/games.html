@@ -31,7 +31,7 @@
         <form action="/games" method="GET" class="d-flex gap-2 align-items-center">
             <select class="form-select w-auto" name="status" onchange="this.form.submit()">
                 <option value="default" {% if current_status == 'all' %}selected disabled{% endif %}>Statuses</option>
-                <option value="all" {% if current_status == 'all' %}selected{% endif %}>All Statuses</option>
+                <option value="all" {% if current_status == 'all' %}selected{% endif %}>All</option>
                 <option value="not_started" {% if current_status == 'not_started' %}selected{% endif %}>Not Started</option>
                 <option value="playing" {% if current_status == 'playing' %}selected{% endif %}>Playing</option>
                 <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
