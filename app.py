@@ -25,7 +25,7 @@ def index():
     current_username = user_data[0]["username"]
 
     games_list = db.execute(
-        "SELECT game_appid, game_name, playtime_forever, img_icon_url, achievements_unlocked, achievements_total, status "
+        "SELECT game_appid, game_name, playtime_forever, img_icon_url, status, achievements_unlocked, achievements_total "
         "FROM steam_games WHERE user_id = ? ORDER BY playtime_forever DESC",
         session["user_id"]
     )
@@ -92,7 +92,7 @@ def register():
 @login_required
 def games():
     games_list = db.execute(
-        "SELECT game_appid, game_name, playtime_forever, img_icon_url, achievements_unlocked, achievements_total, status "
+        "SELECT game_appid, game_name, playtime_forever, img_icon_url, status, achievements_unlocked, achievements_total "
         "FROM steam_games WHERE user_id = ? ORDER BY playtime_forever DESC",
         session["user_id"]
     )
@@ -103,6 +103,26 @@ def games():
         status_filter = "all"
     return render_template("games.html", games=games_list)
 
+def get_game_achievements(appid, steam_id, steam_api_key):
+    url = (
+        "https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/"
+        f"?appid={appid}&key={steam_api_key}&steamid={steam_id}"
+    )
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except (requests.RequestException, ValueError):
+        return 0, 0
+
+    stats = data.get("playerstats", {})
+    if not stats.get("success"):
+        return 0, 0
+
+    achievements = stats.get("achievements", [])
+    total = len(achievements)
+    unlocked = sum(1 for a in achievements if a.get("achieved") == 1)
+    return unlocked, total
 
 @app.route("/games/sync")
 @login_required
@@ -129,7 +149,7 @@ def sync_games():
     except ValueError:
         flash("Steam returned an unexpected response")
         return redirect("/games")
- 
+    
     games_list = data.get("response", {}).get("games", [])
  
     if not games_list:
@@ -140,31 +160,36 @@ def sync_games():
         "SELECT game_appid FROM steam_games WHERE user_id = ?", session["user_id"]
     )
     existing_appids = {row["game_appid"] for row in existing_rows}
- 
-    synced_appids = set()
- 
+
     for game in games_list:
         appid = game["appid"]
         name = game.get("name", "Unknown Game")
         playtime = round(game.get("playtime_forever", 0) / 60, 1)
         img_url = f"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/header.jpg"
- 
-        synced_appids.add(appid)
- 
+
+        achievements_unlocked, achievements_total = get_game_achievements(
+            appid, steam_id, steam_api_key
+        )
         if appid in existing_appids:
             db.execute(
-                "UPDATE steam_games SET game_name = ?, playtime_forever = ?, img_icon_url = ? "
+                "UPDATE steam_games SET game_name = ?, playtime_forever = ?, img_icon_url = ?, "
+                "achievements_unlocked = ?, achievements_total = ? "
                 "WHERE user_id = ? AND game_appid = ?",
-                name, playtime, img_url, session["user_id"], appid
+                name, playtime, img_url, achievements_unlocked, achievements_total,
+                session["user_id"], appid
             )
         else:
             db.execute(
-                "INSERT INTO steam_games (user_id, game_appid, game_name, playtime_forever, img_icon_url) "
-                "VALUES (?, ?, ?, ?, ?)",
-                session["user_id"], appid, name, playtime, img_url
+                "INSERT INTO steam_games (user_id, game_appid, game_name, playtime_forever, img_icon_url, "
+                "achievements_unlocked, achievements_total) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                session["user_id"], appid, name, playtime, img_url,
+                achievements_unlocked, achievements_total
             )
+
     flash("Games synced successfully")
     return redirect("/games")
+    
 
 @app.route("/games/update_status/<int:appid>", methods=["POST"])
 @login_required
