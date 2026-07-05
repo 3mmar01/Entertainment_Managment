@@ -1,6 +1,6 @@
 ## Steam Library & Achievement Dashboard
 
-## Video Demo: <URL HERE>
+## Video Demo: <[URL HERE](https://youtu.be/QwXGcppHMVQ)>
 
 ## Description:
 
