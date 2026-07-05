@@ -17,8 +17,9 @@ So i made this web app to solve this problem .
 When a user registers, they provide a username, password, and their 64-bit Steam ID (SteamID64, found in their Steam profile URL). The app hashes the password with werkzeug.security before storing it — no plaintext passwords ever touch the database. Once logged in, the user lands on two main views:
 
 
-Dashboard (/) — a summary view showing the user's games ordered by playtime, meant to give a quick "here's what I've been playing" snapshot.
-Library (/games) — the full library view, with filter buttons to narrow the list down by completion status, and a "Sync Games" button that pulls fresh data from Steam on demand.
+**Dashboard (/)** — a summary view showing the user's games wich he is playing right now.
+
+**Library (/games**) — the full library view, with filter buttons to narrow the list down by completion status, and a "Sync Games" button that pulls fresh data from Steam on demand.
 
 
 Neither of these routes talks to Steam directly. They only read from the local steam_games table. Fetching from Steam is a deliberately separate action: the library page includes a "Sync Games" button that the user clicks whenever they want fresh data, which hits /games/sync. This split was one of the more important design decisions in the project. My first version had the /games route fetch from Steam and render the page in the same function, which meant every single page load re-hit the Steam API and re-ran insert logic, even when the user just wanted to look at data that hadn't changed. Splitting sync out into its own route means the library page is fast (pure database read), and a sync only happens when the user explicitly asks for one.
